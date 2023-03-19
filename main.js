@@ -8,20 +8,20 @@ const fieldCharacter = '░';
 const pathCharacter = '*';
 
 class Field {
-    constructor(field) {
-        this._fieldd = field;
+    constructor(h, w) {
+        this._field = Field.generateField(h, w)
     }
 
     print() {
         console.log('\n');
-        for (let i = 0; i < this._fieldd.length; i++) {
-            let row = this._fieldd[i];
-            console.log(`${row[0]}  ${row[1]}  ${row[2]}`);
+        for (let column = 0; column < this._field.length; column++) {
+            let row = this._field[column];
+            console.log(row.join(" "));
         }
     }
 
     static generateField(height, width) {
-        // const options = [fieldCharacter, hole, fieldCharacter] // probability of 1/3 to get a hole
+        const options = [fieldCharacter, hole, fieldCharacter] // probability of 1/3 to get a hole
         let field = [];
         for (let h = 0; h < height; h++) {
             let newRow = []
@@ -40,7 +40,6 @@ class Field {
 
 
             if (widthHat && heightHat !== 0) {
-                console.log(heightHat, widthHat)
                 field[heightHat][widthHat] = hat;
                 posHat = true
             }
@@ -50,15 +49,8 @@ class Field {
 }
 
 
-const newField = new Field([
-    [pathCharacter, fieldCharacter, hole],
-    [fieldCharacter, hole, fieldCharacter],
-    [fieldCharacter, hat, fieldCharacter]
-]);
-
+const newField = new Field(5, 6);
 newField.print()
-
-console.log(Field.generateField(4, 5))
 
 let game = true
 while (game) {
