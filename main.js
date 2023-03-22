@@ -9,18 +9,14 @@ const pathCharacter = '*';
 
 class Field {
     constructor(h, w) {
-        this._hat_pos = [0, 0];
         this._x_pos = 0;
         this._y_pos = 0;
         this._field = this.generateField(h, w);
     }
 
     set field(char) {
+        // Sets path character on field
         this._field[this._y_pos][this._x_pos] = char;
-    }
-
-    set hat_position(pos) {
-        this._hat_pos = pos;
     }
 
     print() {
@@ -51,7 +47,6 @@ class Field {
 
             if (widthHat && heightHat !== 0) {
                 field[heightHat][widthHat] = hat;
-                this.hat_position = [heightHat, widthHat];
                 posHat = true;
             }
         }
@@ -59,42 +54,44 @@ class Field {
     }
 
     move_player(direction) {
-        const valid_moves = ["a", "w", "s", "d"];
-
-        // Check if user input a valid direction
-
-        if (valid_moves.includes(direction)) {
-            switch (direction) {
-                case "a":
-                    this._x_pos -= 1;
-                    break;
-                case "w":
-                    this._y_pos += 1;
-                    break;
-                case "s":
-                    this._y_pos -= 1;
-                    break;
-                case "d":
-                    this._x_pos += 1;
-                    break;
-                default:
-                    break;
-            }
-            return true;
-        } else {
-            return false;
+        // Check if user input a valid direction and move player
+        switch (direction) {
+            case "a":
+                this._x_pos -= 1;
+                return true;
+            case "w":
+                this._y_pos -= 1;
+                return true;
+            case "s":
+                this._y_pos += 1;
+                return true;
+            case "d":
+                this._x_pos += 1;
+                return true;
+            default:
+                return false;
         }
-        // if not skip
     }
 
     check_game_status() {
         // Winning case:
-        if (this._hat_pos[0] === this._y_pos && this._hat_pos[1] === this._x_pos) {
+        if (this._field[this._y_pos][this._x_pos] === hat) {
             console.log("You win");
             return true;
 
-            // Out of bones options: // todo work on this
-        } else if (this._y_pos > this.field.length) {
+            // Out of bones cases:
+        } else if (this._y_pos >= this._field.length || this._y_pos < 0) {
+            console.log("Out of bones you lose");
+            return true;
+        } else if (this._x_pos >= this._field[0].length || this._x_pos < 0) {
+            console.log("Out of bones you lose");
+            return true;
+
+            // in case to fall into a hole
+        } else if (this._field[this._y_pos][this._x_pos] === hole) {
+            console.log("You fall in a hole, Game Over");
+            return true;
+        } else {
             return false;
         }
     }
@@ -109,17 +106,19 @@ const prompt = require('prompt-sync')({sigint: true});
 
 let game = true
 while (game) {
-    // todo ask the user to input next move until they'd find their hat
+    // ask the user to input next move until they'd find their hat
     console.log("Make a move: ⬅️(a)⬆️(w)➡️(d)⬇️(s)");
 
 
     let input = prompt(''); // Use node to ask the user to input a direction
 
-    // todo after make a move, the game should print the current field map with the tiles they entered
+    // after make a move, the game should print the current field map with the tiles they entered
     if (newField.move_player(input)) {
         // todo if the user wins or lose end the game
-        if (newField.check_game_status())
+        if (newField.check_game_status()) {
             game = false;
+            continue;
+        }
         newField.print();
     }
 }
